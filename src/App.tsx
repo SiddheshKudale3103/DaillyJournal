@@ -8,6 +8,8 @@ import InterviewSection from "./features/Interviews";
 import QuotesSection from "./features/Quotes";
 import ExtrasSection from "./features/ExtrasSection";
 import Card from "./components/Card";
+import { useMemeOfTheDay } from "./hooks/useMemeOfTheDay";
+
 import { useRecords } from "./store";
 import {
   todayISO,
@@ -108,6 +110,8 @@ export default function App() {
         </div>
 
         <Summary />
+        {/* ✨ New Meme of the Day section */}
+        <MemeOfTheDay />
       </main>
     </div>
   );
@@ -151,5 +155,30 @@ function KPI({ label, value }: { label: string; value: any }) {
       <div className="text-sm opacity-70">{label}</div>
       <div className="text-2xl font-semibold">{String(value)}</div>
     </div>
+  );
+}
+
+function MemeOfTheDay() {
+  const { meme, loading } = useMemeOfTheDay();
+
+  return (
+    <Card className="p-4 space-y-3">
+      <h2 className="text-lg font-semibold">🔥 Meme of the Day</h2>
+      {loading && <p className="opacity-70">Loading meme...</p>}
+      {!loading && meme && (
+        <div className="space-y-2">
+          <a href={meme.postLink} target="_blank" rel="noreferrer">
+            <img
+              src={meme.url}
+              alt={meme.title}
+              className="rounded-xl max-h-[400px] object-contain mx-auto"
+            />
+          </a>
+          <p className="font-medium">{meme.title}</p>
+          <p className="text-sm opacity-60">From r/{meme.subreddit}</p>
+        </div>
+      )}
+      {!loading && !meme && <p>No meme today 😭</p>}
+    </Card>
   );
 }
